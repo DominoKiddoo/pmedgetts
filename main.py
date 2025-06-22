@@ -51,7 +51,7 @@ def speak():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route("/tss", methods=["GET"])
+@app.route("/tts", methods=["GET"])
 def tss():
     text = request.args.get("text")
     voice = request.args.get("voice", "en-US-AriaNeural")
