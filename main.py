@@ -16,7 +16,21 @@ def index():
 def voices():
     try:
         voices_list = asyncio.run(edge_tts.list_voices())
-        return jsonify(voices_list)
+
+        # Allowed locales
+        allowed_locales = {"en-AU", "en-US", "en-GB"}
+
+        # Filter voices by locale prefix
+        filtered_voices = [
+            voice for voice in voices_list
+            if any(
+                voice.get("Locale", "").startswith(locale) or 
+                voice.get("LocaleName", "").startswith(locale)
+                for locale in allowed_locales
+            )
+        ]
+
+        return jsonify(filtered_voices)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -30,7 +44,7 @@ def speak():
             return jsonify({"error": "Missing 'text' in request"}), 400
 
         communicate = edge_tts.Communicate(text, voice)
-        output_path = "output.mp3"
+        output_path = f"output_{uuid.uuid4()}.mp3"
         asyncio.run(communicate.save(output_path))
 
         return jsonify({"message": "Speech generated", "file": output_path})
@@ -51,10 +65,8 @@ def tss():
         communicate = edge_tts.Communicate(text, voice)
         asyncio.run(communicate.save(output_path))
 
-        # Serve the file and delete after sending
         response = send_file(output_path, mimetype="audio/mpeg")
 
-        # Clean up file after response is sent
         @response.call_on_close
         def cleanup():
             if os.path.exists(output_path):
