@@ -6,33 +6,24 @@ import uuid
 import os
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app)
 
-# Optional: restrict to specific voices (en-US, en-GB, en-AU)
+# ---- 🧠 GLOBAL VOICE LIST INITIALIZATION ----
 ENGLISH_VOICES = []
 
-async def load_voices():
+def load_voices():
     global ENGLISH_VOICES
-    voices = await edge_tts.list_voices()
-    ENGLISH_VOICES = [v for v in voices if v["Locale"] in ("en-US", "en-GB", "en-AU")]
+    voices = asyncio.run(edge_tts.list_voices())
+    ENGLISH_VOICES = [
+        v for v in voices if v["Locale"] in ("en-US", "en-GB", "en-AU")
+    ]
 
-# Run async setup
-asyncio.run(load_voices())
+# Load voices on server startup
+load_voices()
 
 @app.route("/")
 def home():
-    return "Edge TTS server is running!"
-
-@app.route("/voices")
-def voices():
-    return jsonify([
-        {
-            "name": v["ShortName"],
-            "display": f'{v["DisplayName"]} ({v["Locale"]})',
-            "gender": v["Gender"]
-        }
-        for v in ENGLISH_VOICES
-    ])
+    return "Flask server is running!"
 
 @app.route("/tts")
 def tts():
@@ -52,5 +43,16 @@ def tts():
 
     return send_file(filename, mimetype="audio/mpeg")
 
+@app.route("/voices")
+def voices():
+    return jsonify([
+        {
+            "name": v["ShortName"],
+            "display": f'{v["DisplayName"]} ({v["Locale"]})',
+            "gender": v["Gender"]
+        }
+        for v in ENGLISH_VOICES
+    ])
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host='0.0.0.0', port=8080)
