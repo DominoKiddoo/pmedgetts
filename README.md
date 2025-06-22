@@ -57,7 +57,7 @@ No there is not a character limit, but long strings may take a while to generate
 
 #### How can I get the penguinmod extension?
 
-When adding the extension, click 'load custom extension', and paste 'https://raw.githubusercontent.com/DominoKiddoo/pmedgetts/refs/heads/main/penguinmod-extension/edgetts.js?token=GHSAT0AAAAAADGCKV2MLV2APYXAUMECTA5Y2CXXR6Q' **TICK 'RUN UNSANDBOXED'OR IT WILL NOT LOAD**
+When adding the extension, click 'load custom extension', and paste 'https://gist.githubusercontent.com/DominoKiddoo/ef32fb53a4e54c3c40bf38b4c2d02c63/raw/b6b0090c503ec42cf524c7ff1cbbdfcb0c280f32/gistfile1.txt)' **TICK 'RUN UNSANDBOXED'OR IT WILL NOT LOAD**
 
 #### What voices are supported?
 
