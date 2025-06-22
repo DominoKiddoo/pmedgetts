@@ -17,17 +17,10 @@ def voices():
     try:
         voices_list = asyncio.run(edge_tts.list_voices())
 
-        # Allowed locales
-        allowed_locales = {"en-AU", "en-US", "en-GB"}
-
-        # Filter voices by locale prefix
+        # Filter voices where the locale starts with 'en' (all English voices)
         filtered_voices = [
             voice for voice in voices_list
-            if any(
-                voice.get("Locale", "").startswith(locale) or 
-                voice.get("LocaleName", "").startswith(locale)
-                for locale in allowed_locales
-            )
+            if voice.get("Locale", "").startswith("en")
         ]
 
         return jsonify(filtered_voices)
