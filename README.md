@@ -8,7 +8,7 @@ It was originally designed to be used in [penguinmod](https://penguinmod.com/) b
 
 1. Go to the 'extensions' tab
 2. Click 'load custom extension'
-3. Paste in https://gist.githubusercontent.com/DominoKiddoo/ef32fb53a4e54c3c40bf38b4c2d02c63/raw/b6b0090c503ec42cf524c7ff1cbbdfcb0c280f32/gistfile1.txt)
+3. Paste in https://gist.githubusercontent.com/DominoKiddoo/ef32fb53a4e54c3c40bf38b4c2d02c63/raw/b6b0090c503ec42cf524c7ff1cbbdfcb0c280f32/gistfile1.txt
 4. Tick 'run extension without sandbox' or the extension will not work
 5. Click 'load'
 
