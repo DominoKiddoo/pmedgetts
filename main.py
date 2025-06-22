@@ -62,5 +62,30 @@ def tss():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/downloadpmextension")
+def download_pm_extension():
+    filename = "penguinmod-extension/edgetts.js"  # Adjust path if needed
+    if not os.path.exists(filename):
+        return "Extension file not found.", 404
+
+    return f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Downloading...</title>
+    </head>
+    <body>
+        <a id="download" href="/static/{filename}" download style="display:none;">Download</a>
+        <script>
+            const link = document.getElementById('download');
+            link.click();
+            setTimeout(() => window.close(), 3000); // Close after 3 seconds
+        </script>
+        <p>Downloading PenguinMod extension...</p>
+    </body>
+    </html>
+    """
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
