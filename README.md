@@ -24,6 +24,7 @@ Returns JSON all voices, and information about them (eg: Language, and tags)
 ```http
   https://pmedgetts.onrender.com/tts?voice=voiceid&text=yourtext
 ```
+(That example won't work as the voice ID is invalid)
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
@@ -46,7 +47,7 @@ You can use ```curl``` to make a request and save the MP3:
 curl "https://pmedgetts.onrender.com/tts?voice=en-US-BrianNeural&text=hello%20world" --output output.mp3
 ```
 
-#### Is it multilingual>
+#### Is it multilingual?
 
 The text-to-speech can be multilingual, just make sure you have a voice selected that matches the language of the text
 
