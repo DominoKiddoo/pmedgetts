@@ -10,7 +10,11 @@ CORS(app)
 
 @app.route("/")
 def index():
-    return "Edge TTS Server is running."
+    return (
+        "Microsoft Edge TTS API<br>"
+        "Documentation: <a href='https://github.com/DominoKiddoo/pmedgetts/tree/main'>GitHub Repo</a><br>"
+        "Penguinmod Extension URL: <a href='https://raw.githubusercontent.com/DominoKiddoo/pmedgetts/refs/heads/main/penguinmod-extension/edgetts.js?token=GHSAT0AAAAAADGCKV2MLV2APYXAUMECTA5Y2CXXR6Q'>Extension Link</a>"
+    )
 
 @app.route("/voices", methods=["GET"])
 def voices():
