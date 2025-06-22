@@ -4,6 +4,14 @@ An API wrapper for Microsoft Edge TTS, which has over 170 high quality text-to-s
 
 It was originally designed to be used in [penguinmod](https://penguinmod.com/) but can also be used in any other languages.
 
+## HOW TO INSTALL PENGUINMOD EXTENSION
+
+1. Go to the 'extensions' tab
+2. Click 'load custom extension'
+3. Paste in https://gist.githubusercontent.com/DominoKiddoo/ef32fb53a4e54c3c40bf38b4c2d02c63/raw/b6b0090c503ec42cf524c7ff1cbbdfcb0c280f32/gistfile1.txt)
+4. Tick 'run extension without sandbox' or the extension will not work
+5. Click 'load'
+
 
 
 
@@ -46,6 +54,8 @@ You can use ```curl``` to make a request and save the MP3:
 ```
 curl "https://pmedgetts.onrender.com/tts?voice=en-US-BrianNeural&text=hello%20world" --output output.mp3
 ```
+
+On MacOS, to play the sound you can use ```afplay output.mp3```
 
 #### Is it multilingual?
 
