@@ -1,7 +1,9 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 import edge_tts
 import asyncio
+import uuid
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -32,6 +34,33 @@ def speak():
         asyncio.run(communicate.save(output_path))
 
         return jsonify({"message": "Speech generated", "file": output_path})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/tss", methods=["GET"])
+def tss():
+    text = request.args.get("text")
+    voice = request.args.get("voice", "en-US-AriaNeural")
+
+    if not text:
+        return jsonify({"error": "Missing 'text' parameter"}), 400
+
+    output_path = f"output_{uuid.uuid4()}.mp3"
+
+    try:
+        communicate = edge_tts.Communicate(text, voice)
+        asyncio.run(communicate.save(output_path))
+
+        # Serve the file and delete after sending
+        response = send_file(output_path, mimetype="audio/mpeg")
+
+        # Clean up file after response is sent
+        @response.call_on_close
+        def cleanup():
+            if os.path.exists(output_path):
+                os.remove(output_path)
+
+        return response
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
