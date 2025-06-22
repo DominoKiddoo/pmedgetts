@@ -16,14 +16,7 @@ def index():
 def voices():
     try:
         voices_list = asyncio.run(edge_tts.list_voices())
-
-        # Filter voices where the locale starts with 'en' (all English voices)
-        filtered_voices = [
-            voice for voice in voices_list
-            if voice.get("Locale", "").startswith("en")
-        ]
-
-        return jsonify(filtered_voices)
+        return jsonify(voices_list)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
