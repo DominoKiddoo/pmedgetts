@@ -13,7 +13,7 @@ def index():
     return (
         "Microsoft Edge TTS API<br>"
         "Documentation: <a href='https://github.com/DominoKiddoo/pmedgetts/tree/main'>GitHub Repo</a><br>"
-        "Penguinmod Extension URL: <a href='https://gist.githubusercontent.com/DominoKiddoo/ef32fb53a4e54c3c40bf38b4c2d02c63/raw/b6b0090c503ec42cf524c7ff1cbbdfcb0c280f32/gistfile1.txt'>Extension Link</a>"
+        "Penguinmod Extension URL: <a href='https://raw.githubusercontent.com/DominoKiddoo/pmedgetts/refs/heads/main/penguinmod-extension/edgetts.js'>Extension Link</a>"
     )
 
 @app.route("/voices", methods=["GET"])
