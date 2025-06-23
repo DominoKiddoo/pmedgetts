@@ -1,4 +1,4 @@
-﻿class EdgeTTS {
+class EdgeTTS {
   constructor(runtime) {
     this.runtime = runtime; // Scratch runtime for storage & targets
     this.currentAudioBlob = null; // latest TTS audio blob
@@ -328,7 +328,8 @@
       { name: "zu-ZA-ThandoNeural", label: "Microsoft Thando Online (Natural) - Zulu (South Africa)" },
       { name: "zu-ZA-ThembaNeural", label: "Microsoft Themba Online (Natural) - Zulu (South Africa)" }
     ];
-    this.selectedVoice = this.voices[0].label;
+    // Initialize selectedVoice with the name, not the label, for internal use.
+    this.selectedVoice = this.voices[0].name; // Changed to store the 'name'
   }
 
   getInfo() {
@@ -344,9 +345,15 @@
             VOICE: {
               type: Scratch.ArgumentType.STRING,
               menu: 'voices',
-              defaultValue: this.selectedVoice
+              defaultValue: this.voices[0].name // Ensure default value is the name
             }
           }
+        },
+        // NEW BLOCK: Set voice to random
+        {
+          opcode: 'setRandomVoice',
+          blockType: Scratch.BlockType.COMMAND,
+          text: 'set voice to random'
         },
         {
           opcode: 'generateSpeech',
@@ -385,53 +392,56 @@
               defaultValue: 'tts.mp3'
             }
           }
+        },
+        // NEW BLOCK: Currently selected voice (reporter)
+        {
+          opcode: 'getCurrentVoice',
+          blockType: Scratch.BlockType.REPORTER,
+          text: 'selected voice'
         }
       ],
       menus: {
-        // This is the key change:
-        // We map to an array of objects where 'text' is the FriendlyName (what the user sees)
-        // and 'value' is the ShortName (what gets passed to setVoice).
         voices: this.voices.map(v => ({ text: v.label, value: v.name }))
       }
     };
   }
 
-
   setVoice(args) {
     // args.VOICE will now correctly contain the ShortName (e.g., "en-US-AvaNeural")
     this.selectedVoice = args.VOICE;
-    console.warn(this.selectedVoice) // This will now log the ShortName
+    console.warn(`Voice set to: ${this.selectedVoice}`);
+  }
+
+  // NEW METHOD: setRandomVoice
+  setRandomVoice() {
+    const randomIndex = Math.floor(Math.random() * this.voices.length);
+    this.selectedVoice = this.voices[randomIndex].name;
+    console.warn(`Voice set to random: ${this.selectedVoice}`);
   }
 
   async generateSpeech(args) {
     const text = encodeURIComponent(args.TEXT);
     const voice = encodeURIComponent(this.selectedVoice);
 
-
     const url = `https://pmedgetts.onrender.com/tts?voice=${voice}&text=${text}`;
-
 
     try {
       const response = await fetch(url);
       if (!response.ok) throw new Error(`HTTP error ${response.status}`);
 
-
       const blob = await response.blob();
       this.currentAudioBlob = blob;
-
 
       if (this.currentAudioUrl) {
         URL.revokeObjectURL(this.currentAudioUrl);
       }
       this.currentAudioUrl = URL.createObjectURL(blob);
 
-
       console.log('Speech generated!');
     } catch (e) {
       console.error('Error generating speech:', e);
     }
   }
-
 
   playSpeech() {
     if (!this.currentAudioUrl) {
@@ -441,7 +451,6 @@
     const audio = new Audio(this.currentAudioUrl);
     audio.play();
   }
-
 
   async saveSpeechToSprite(args) {
     if (!this.currentAudioBlob) {
@@ -453,7 +462,6 @@
       return;
     }
 
-
     try {
       const target = this.runtime.getEditingTarget();
       if (!target) {
@@ -461,10 +469,8 @@
         return;
       }
 
-
       const arrayBuffer = await this.currentAudioBlob.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
-
 
       const storage = this.runtime.storage;
       const asset = new storage.Asset(
@@ -475,7 +481,6 @@
         true
       );
 
-
       // Use Scratch.vm to add sound, NOT this.runtime
       await Scratch.vm.addSound({
         md5: asset.assetId + '.' + asset.dataFormat,
@@ -483,13 +488,11 @@
         name: args.SOUNDNAME || 'TTS Sound'
       }, target.id);
 
-
       console.log(`Saved sound "${args.SOUNDNAME}" to sprite.`);
     } catch (e) {
       console.error('Error saving speech to sprite:', e);
     }
   }
-
 
   downloadSpeech(args) {
     if (!this.currentAudioBlob) {
@@ -497,9 +500,7 @@
       return;
     }
 
-
     const filename = args.FILENAME || 'tts.mp3';
-
 
     const url = URL.createObjectURL(this.currentAudioBlob);
     const a = document.createElement('a');
@@ -508,13 +509,18 @@
     document.body.appendChild(a);
     a.click();
 
-
     setTimeout(() => {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }, 100);
   }
-}
 
+  // NEW METHOD: getCurrentVoice
+  getCurrentVoice() {
+    // Find the label corresponding to the currently selected voice name
+    const voice = this.voices.find(v => v.name === this.selectedVoice);
+    return voice ? voice.label : 'Unknown Voice';
+  }
+}
 
 Scratch.extensions.register(new EdgeTTS(Scratch.vm.runtime));
